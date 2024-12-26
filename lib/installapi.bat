@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=TwsApi.jar -DgroupId=com.ib -DartifactId=TwsApi -Dversion=9.72 -Dpackaging=jar
