@@ -5,6 +5,9 @@ import com.graycat.rdte.trader.OptionEntry;
 import com.ib.client.*;
 
 public class RDTETrader {
+
+    public static boolean chainRetreived = false;
+
     public static void main(String[] args) throws InterruptedException {
         EWrapperImpl wrapper = new EWrapperImpl();
 

@@ -21,7 +21,7 @@ public class ContractSamples {
         contract.secType("STK");
         contract.currency("USD");
         contract.exchange("SMART");
-        contract.primaryExch("ARCA");
+        contract.primaryExch("ISLAND");
         //! [stkcontractwithprimary]
         return contract;
     }
@@ -48,6 +48,30 @@ public class ContractSamples {
         //! [stkcontractwithprimary]
         return contract;
     }
+
+    public static Contract XSP() {
+        //! [stkcontractwithprimary]
+        Contract contract = new Contract();
+        contract.symbol("XSP");
+        contract.secType("IND");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        contract.primaryExch("ARCA");
+        //! [stkcontractwithprimary]
+        return contract;
+    }
+    public static Contract IWM() {
+        //! [stkcontractwithprimary]
+        Contract contract = new Contract();
+        contract.symbol("IWM");
+        contract.secType("STK");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        contract.primaryExch("ISLAND");
+        //! [stkcontractwithprimary]
+        return contract;
+    }
+
     public static Contract BondWithCusip() {
         //! [bondwithcusip]
         Contract contract = new Contract();
@@ -727,8 +751,36 @@ public class ContractSamples {
         contract.secType("OPT");
         contract.currency("USD");
         contract.exchange("SMART");
-       // contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
-        contract.lastTradeDateOrContractMonth("20241230");
+        //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
+        contract.lastTradeDateOrContractMonth("20250530");
+        contract.strike(strike);
+        contract.right(strategy);
+        contract.multiplier("100");
+        return contract;
+    }
+
+    public static Contract IWM0DTEContract(double strike, String strategy) {
+        Contract contract = new Contract();
+        contract.symbol("IWM");
+        contract.secType("OPT");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
+        contract.lastTradeDateOrContractMonth("20250330");
+        contract.strike(strike);
+        contract.right(strategy);
+        contract.multiplier("100");
+        return contract;
+    }
+
+    public static Contract XSP0DTEContract(double strike, String strategy) {
+        Contract contract = new Contract();
+        contract.symbol(".XSP");
+        contract.secType("OPT");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
+        contract.lastTradeDateOrContractMonth("20250311");
         contract.strike(strike);
         contract.right(strategy);
         contract.multiplier("100");

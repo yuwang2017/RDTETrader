@@ -60,7 +60,7 @@ public class LogManager {
             try {
                 File output = new File(resource.toURI());
                 ObjectMapper mapper = new ObjectMapper();
-                mapper.writeValue(output, log);
+                mapper.writerWithDefaultPrettyPrinter().writeValue(output, log);
 
             }catch(Exception e){
                 e.printStackTrace();

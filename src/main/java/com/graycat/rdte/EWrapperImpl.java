@@ -36,6 +36,7 @@ public class EWrapperImpl implements EWrapper {
 
     int submittedOrderId = 0;
 
+
     HashMap<Integer, OptionEntry> optionHolder = new HashMap<>();
 
     //! [socket_init]
@@ -78,7 +79,7 @@ public class EWrapperImpl implements EWrapper {
         }
 
         //2. Check delta is between 0.15 to 0.4
-        if (option.getDelta() > 0.3 || option.getDelta() < 0.20) {
+        if (option.getDelta() > 0.2 || option.getDelta() < 0.15) {
             return;
         }
 
@@ -105,15 +106,22 @@ public class EWrapperImpl implements EWrapper {
         //deal found, create order
         int cid = getCurrentOrderId() + 1;
 
-      //  getClient().placeOrder(cid, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.MarketOrder("SELL", Decimal.parse("1")));
-       // getClient().reqGlobalCancel();
+        getClient().placeOrder(cid, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.MarketOrder("SELL", Decimal.parse("1")));
+        //getClient().reqGlobalCancel();
     }
 
+    /**
+     * Call back from get contract detail
+     * @param reqId
+     * @param contractDetails
+     */
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
+        System.out.println("Request Id : " + reqId + " call back contract details");
         if (reqId == 1001) {
             //Set up the optionChain
             getClient().reqSecDefOptParams(1002, "RUT", "", "IND",  contractDetails.conid());
+            getClient().cancelMktData(1001);
         }
         //System.out.println(EWrapperMsgGenerator.contractDetails(reqId, contractDetails));
     }
@@ -121,19 +129,28 @@ public class EWrapperImpl implements EWrapper {
     @Override
     public void securityDefinitionOptionalParameter(int reqId, String exchange, int underlyingConId, String tradingClass, String multiplier,
                                                     Set<String> expirations, Set<Double> strikes) {
-        if (optionChain == null) {
-            optionChain = new OptionChain();
-            if (reqId == 1002) {
-                //This is the process to set the option expiration date and strike price
-                optionChain.setSymbol("RUT");
-                optionChain.setExpire(ContractSamples.getToday());
-                for (Double strike : strikes) {
-                    OptionEntry option = new OptionEntry();
-                    option.setStrike(strike);
-                    optionChain.getOptions().add(option);
+        if(!RDTETrader.chainRetreived) {
+            if (optionChain == null) {
+                optionChain = new OptionChain();
+                if (reqId == 1002) {
+                    RDTETrader.chainRetreived = true;
+                    getClient().cancelMktData(1002);
+                    System.out.println("Request Id : " + reqId + " strikes : ");
+                    for (Double strike : strikes) {
+                        System.out.print(strike + ", ");
+                    }
+                    //This is the process to set the option expiration date and strike price
+                    optionChain.setSymbol("RUT");
+                    optionChain.setExpire(ContractSamples.getToday());
+                    for (Double strike : strikes) {
+                        OptionEntry option = new OptionEntry();
+                        option.setStrike(strike);
+                        optionChain.getOptions().add(option);
+                    }
+
+                    //After setup the option chain, get the current RUT Price
+                    getClient().reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
                 }
-                //After setup the option chain, get the current RUT value
-                getClient().reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
             }
         }
         //System.out.println("Security Definition Optional Parameter: " + EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes));
@@ -141,6 +158,7 @@ public class EWrapperImpl implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attribs) {
+        System.out.println("ReqId : " + tickerId + ", Tick Price : " + price + " , Field : " + field);
         if (tickerId == 1003) {
             if (field == 9) {
                 currentPrice = price;
@@ -152,7 +170,8 @@ public class EWrapperImpl implements EWrapper {
                 for (OptionEntry option : optionChain.getOptions()) {
                     if ((option.getStrike() > currentPrice) && (option.getStrike() < currentPrice * 1.05)) {
                         optionHolder.put(requestId, option);
-                        getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "100,233", false, false, null);
+                      //  getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "100,221,220,233", false, false, null);
+                        getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "", false, false, null);
                         requestId = requestId + 1;
                     }
                 }
@@ -166,16 +185,18 @@ public class EWrapperImpl implements EWrapper {
             if (field == 3) {
                 option.setAsk(price);
             }
-            if(field == 4) {
+            if(field == 37) {
                 option.setPrice(price);
+                System.out.println("ReqId : " + tickerId + ", Mark Price : " + price + " , Field : " + field + ", Strike :" + option.getStrike());
             }
+          //  System.out.println("ReqId : " + tickerId + ", Tick Price : " + price + " , Field : " + field + ", Strike :" + option.getStrike());
         }
         //System.out.println("Tick Price: " + EWrapperMsgGenerator.tickPrice( tickerId, field, price, attribs));
     }
 
     @Override
     public void tickSize(int tickerId, int field, Decimal size) {
-       //System.out.println("tickerId = " + tickerId + ", filed = " + field + ", volume =" + size);
+      // System.out.println("tickerId = " + tickerId + ", filed = " + field + ", volume =" + size);
         OptionEntry option = optionHolder.get(tickerId);
         if (option != null) {
             if (field == 0) {
@@ -190,12 +211,13 @@ public class EWrapperImpl implements EWrapper {
     @Override
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta, double optPrice,
                                       double pvDividend, double gamma, double vega, double theta, double undPrice) {
-        if (delta > 0.1 && delta < 0.4) {
+        System.out.println("======= Option Computation =======");
+        if (delta > 0.1 && delta < 0.3) {
             OptionEntry option = optionHolder.get(tickerId);
             if (option != null) {
                 option.setDelta(delta);
                 option.setUndPrice(undPrice);
-                //if(option.getVolume() > 400 && !orderSubmitted) {
+                option.setPrice(optPrice);
                 if(!orderSubmitted){
                     checkForTrade(tickerId, option);
                     System.out.println("reqId = " + tickerId + ", Delta = " + delta + ", strike = " + option.getStrike());

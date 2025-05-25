@@ -41,7 +41,7 @@ public class TestBed {
         Thread.sleep(1000);
         requestMarketData(wrapper.getClient());
         //	testSubmitOrder(wrapper.getClient(), wrapper.getCurrentOrderId());
-        Thread.sleep(10000);
+        Thread.sleep(30000);
         m_client.eDisconnect();
     }
 
@@ -49,16 +49,16 @@ public class TestBed {
         client.placeOrder(nextOrderId++, ContractSamples.RUT0DTEContract(2240, OptionEntry.CALL), OrderSamples.LimitOrder("BUY", Decimal.parse("1"), 0.05));
     }
     private static void requestMarketData(EClientSocket client) {
-        //client.reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
+        client.reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
         //client.reqTickByTickData(1003, ContractSamples.RUSSEL2000(), "Last", 0, false);
-        client.reqMktData(1004, ContractSamples.RUT0DTEContract(2220, OptionEntry.CALL), "100,233,236", false, false, null);
+        //client.reqMktData(1003, ContractSamples.RUT0DTEContract(226, OptionEntry.CALL), "100,233,236", false, false, null);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        client.cancelMktData(1004);
+        client.cancelMktData(1003);
     }
     private static void startRussel0TDECoverCall(EClientSocket client){
         client.reqContractDetails(1001, ContractSamples.Rut());
