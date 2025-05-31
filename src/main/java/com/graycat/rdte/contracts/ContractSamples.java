@@ -238,6 +238,8 @@ public class ContractSamples {
         return contract;
     }
 
+
+
     public static Contract USStockAtSmart() {
         Contract contract = new Contract();
         contract.symbol("IBM");
@@ -306,7 +308,7 @@ public class ContractSamples {
         //! [optcontract_localsymbol]
         Contract contract = new Contract();
         //Watch out for the spaces within the local symbol!
-        contract.localSymbol("P BMW  20221216 72 M");
+        contract.localSymbol("P BMW  20250530 72 M");
         contract.secType("OPT");
         contract.exchange("EUREX");
         contract.currency("EUR");
@@ -314,6 +316,20 @@ public class ContractSamples {
         return contract;
     }
 
+    public static Contract OptionWithLocalSymbol2() {
+        //! [optcontract_localsymbol]
+        Contract contract = new Contract();
+        //Watch out for the spaces within the local symbol!
+        contract.symbol("RUT");
+        contract.secType("OPT");
+        contract.exchange("SMART");
+        contract.currency("USD");
+        contract.strike(2020);
+        contract.right("PUT");
+
+        //! [optcontract_localsymbol]
+        return contract;
+    }
     public static Contract DutchWarrant() {
         //! [ioptcontract]
         Contract contract = new Contract();
@@ -321,6 +337,7 @@ public class ContractSamples {
         contract.secType("IOPT");
         contract.exchange("SBF");
         contract.currency("EUR");
+
         //! [ioptcontract]
         return contract;
     }
@@ -751,8 +768,8 @@ public class ContractSamples {
         contract.secType("OPT");
         contract.currency("USD");
         contract.exchange("SMART");
-        //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
-        contract.lastTradeDateOrContractMonth("20250530");
+        contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
+        //contract.lastTradeDateOrContractMonth("20250530");
         contract.strike(strike);
         contract.right(strategy);
         contract.multiplier("100");
@@ -766,7 +783,7 @@ public class ContractSamples {
         contract.currency("USD");
         contract.exchange("SMART");
         //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
-        contract.lastTradeDateOrContractMonth("20250330");
+        contract.lastTradeDateOrContractMonth("20250527");
         contract.strike(strike);
         contract.right(strategy);
         contract.multiplier("100");
@@ -775,12 +792,12 @@ public class ContractSamples {
 
     public static Contract XSP0DTEContract(double strike, String strategy) {
         Contract contract = new Contract();
-        contract.symbol(".XSP");
+        contract.symbol("XSP");
         contract.secType("OPT");
         contract.currency("USD");
         contract.exchange("SMART");
         //contract.lastTradeDateOrContractMonth(sdf.format(new Date()));
-        contract.lastTradeDateOrContractMonth("20250311");
+        contract.lastTradeDateOrContractMonth("20250602");
         contract.strike(strike);
         contract.right(strategy);
         contract.multiplier("100");

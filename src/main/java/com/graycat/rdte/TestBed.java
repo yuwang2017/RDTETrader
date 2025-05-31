@@ -49,9 +49,11 @@ public class TestBed {
         client.placeOrder(nextOrderId++, ContractSamples.RUT0DTEContract(2240, OptionEntry.CALL), OrderSamples.LimitOrder("BUY", Decimal.parse("1"), 0.05));
     }
     private static void requestMarketData(EClientSocket client) {
-        client.reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
+        //client.reqMktData(1003, ContractSamples.OptionWithLocalSymbol2(), "", false, false, null);
         //client.reqTickByTickData(1003, ContractSamples.RUSSEL2000(), "Last", 0, false);
-        //client.reqMktData(1003, ContractSamples.RUT0DTEContract(226, OptionEntry.CALL), "100,233,236", false, false, null);
+        //client.reqMktData(1003, ContractSamples.RUT0DTEContract(2090, OptionEntry.CALL), "100,220,221,233,236", false, false, null);
+        //client.reqMktData(1003, ContractSamples.RUT0DTEContract(2060, OptionEntry.CALL), "220,221", false, false, null);
+        client.reqMktData(1003, ContractSamples.XSP0DTEContract(585, OptionEntry.CALL), "101", false, false, null);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

@@ -8,17 +8,9 @@ import com.graycat.rdte.utils.LogManager;
 import com.graycat.rdte.utils.TradingLogEntry;
 import com.ib.client.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Date;
+import java.util.*;
 
-/**
- * This class implements RDTE strategy by monitoring the volume change
- * of RUT 0DTE call volume.
- */
-public class EWrapperImpl implements EWrapper {
+public class XPSTraderWrapper implements EWrapper {
 
     private EReaderSignal readerSignal;
     private EClientSocket clientSocket;
@@ -40,7 +32,7 @@ public class EWrapperImpl implements EWrapper {
     HashMap<Integer, OptionEntry> optionHolder = new HashMap<>();
 
     //! [socket_init]
-    public EWrapperImpl() {
+    public XPSTraderWrapper() {
         readerSignal = new EJavaSignal();
         clientSocket = new EClientSocket(this, readerSignal);
     }
@@ -75,7 +67,7 @@ public class EWrapperImpl implements EWrapper {
 
         //1. Volume > 700
         if (option.getVolume() < 300) {
-         //   return;
+            //   return;
         }
 
         //2. Check delta is between 0.15 to 0.3
@@ -100,7 +92,7 @@ public class EWrapperImpl implements EWrapper {
         System.out.println(" *********** Get a Deal : " + new Date() + " ***************** ");
         System.out.println(" *********** Option Strike = " + option.getStrike() + ", Delta = " + option.getDelta() + " ***********");
         System.out.println(" *********** Bid = " + option.getBid() + ", Ask = " + option.getAsk() + ", OptionPrice = " + option.getOptPrice() + " ***********");
-       // System.exit(0);
+        // System.exit(0);
         //Submit Order
 
         //deal found, create order
@@ -129,7 +121,7 @@ public class EWrapperImpl implements EWrapper {
         System.out.println("Request Id : " + reqId + " call back contract details");
         if (reqId == 1001) {
             //Set up the optionChain
-            getClient().reqSecDefOptParams(1002, "RUT", "", "IND",  contractDetails.conid());
+            getClient().reqSecDefOptParams(1002, "XSP", "", "IND",  contractDetails.conid());
             getClient().cancelMktData(1001);
         }
         //System.out.println(EWrapperMsgGenerator.contractDetails(reqId, contractDetails));
@@ -149,7 +141,7 @@ public class EWrapperImpl implements EWrapper {
                         System.out.print(strike + ", ");
                     }
                     //This is the process to set the option expiration date and strike price
-                    optionChain.setSymbol("RUT");
+                    optionChain.setSymbol("XSP");
                     optionChain.setExpire(ContractSamples.getToday());
                     for (Double strike : strikes) {
                         OptionEntry option = new OptionEntry();
@@ -180,7 +172,7 @@ public class EWrapperImpl implements EWrapper {
                     if ((option.getStrike() > currentPrice) && (option.getStrike() < currentPrice * 1.02)) {
                         optionHolder.put(requestId, option);
                         //getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "100,106,221,220,233,236", false, false, null);
-                        getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "101", false, false, null);
+                        getClient().reqMktData(requestId, ContractSamples.XSP0DTEContract(option.getStrike(), OptionEntry.CALL), "101", false, false, null);
                         requestId = requestId + 1;
                     }
                 }
@@ -203,13 +195,13 @@ public class EWrapperImpl implements EWrapper {
 
     @Override
     public void tickSize(int tickerId, int field, Decimal size) {
-      // System.out.println("tickerId = " + tickerId + ", filed = " + field + ", volume =" + size);
+        // System.out.println("tickerId = " + tickerId + ", filed = " + field + ", volume =" + size);
         OptionEntry option = optionHolder.get(tickerId);
         if (option != null) {
             if (field == 8) {
                 option.setStrategy(OptionEntry.CALL);
                 option.setVolume((int) size.longValue());
-               // System.out.println("tickerId = " + tickerId + ", volume =" + size);
+                // System.out.println("tickerId = " + tickerId + ", volume =" + size);
             }
         }
     }
@@ -270,7 +262,7 @@ public class EWrapperImpl implements EWrapper {
                 TradingLogEntry logEntry = new TradingLogEntry();
                 logEntry.setExpire(ContractSamples.getToday());
                 logEntry.setStrategy(OptionEntry.CALL);
-                logEntry.setTicker("RUT");
+                logEntry.setTicker("XSP");
                 logEntry.setTradingDate(new Date());
                 logEntry.setStrike(option.getStrike());
                 logEntry.setVolume(option.getVolume());
@@ -847,3 +839,4 @@ public class EWrapperImpl implements EWrapper {
     }
     //! [userInfo]
 }
+

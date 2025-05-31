@@ -1,13 +1,15 @@
 package com.graycat.rdte;
+
 import com.graycat.rdte.contracts.ContractSamples;
-import com.ib.client.*;
+import com.ib.client.EClientSocket;
+import com.ib.client.EReader;
+import com.ib.client.EReaderSignal;
 
-public class RDTETrader {
-
+public class XPSTrader {
     public static boolean chainRetreived = false;
 
     public static void main(String[] args) throws InterruptedException {
-        EWrapperImpl wrapper = new EWrapperImpl();
+        XPSTraderWrapper wrapper = new XPSTraderWrapper();
 
         final EClientSocket m_client = wrapper.getClient();
         final EReaderSignal m_signal = wrapper.getSignal();

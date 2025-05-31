@@ -14,7 +14,9 @@ public class OptionEntry {
 
     private int openInt = 0;
 
-    private double price;
+    private double markPrice;
+
+    private double optPrice;
 
     private double undPrice;
 
@@ -76,12 +78,20 @@ public class OptionEntry {
         this.delta = delta;
     }
 
-    public double getPrice() {
-        return price;
+    public double getMarkPrice() {
+        return markPrice;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setMarkPrice(double markPrice) {
+        this.markPrice = markPrice;
+    }
+
+    public double getOptPrice() {
+        return optPrice;
+    }
+
+    public void setOptPrice(double optPrice) {
+        this.optPrice = optPrice;
     }
 
     public double getUndPrice() {
