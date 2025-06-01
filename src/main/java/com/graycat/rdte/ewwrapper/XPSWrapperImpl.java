@@ -103,7 +103,7 @@ public class XPSWrapperImpl implements EWrapper {
             orderPrice = option.getOptPrice();
         }
         if(orderPrice > 0) {
-
+            orderPrice = Math.round(orderPrice * 100.0) / 100.0;
             //  orderSubmitted = true;
             submittedRequestId = tickerId;
             // getClient().placeOrder(cid, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.MarketOrder("SELL", Decimal.parse("1")));
