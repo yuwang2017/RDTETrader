@@ -49,28 +49,6 @@ public class ContractSamples {
         return contract;
     }
 
-    public static Contract XSP() {
-        //! [stkcontractwithprimary]
-        Contract contract = new Contract();
-        contract.symbol("XSP");
-        contract.secType("IND");
-        contract.currency("USD");
-        contract.exchange("SMART");
-        contract.primaryExch("ARCA");
-        //! [stkcontractwithprimary]
-        return contract;
-    }
-    public static Contract IWM() {
-        //! [stkcontractwithprimary]
-        Contract contract = new Contract();
-        contract.symbol("IWM");
-        contract.secType("STK");
-        contract.currency("USD");
-        contract.exchange("SMART");
-        contract.primaryExch("ISLAND");
-        //! [stkcontractwithprimary]
-        return contract;
-    }
 
     public static Contract BondWithCusip() {
         //! [bondwithcusip]
@@ -801,6 +779,26 @@ public class ContractSamples {
         contract.strike(strike);
         contract.right(strategy);
         contract.multiplier("100");
+        return contract;
+    }
+
+    public static Contract XSP() {
+        Contract contract = new Contract();
+        contract.symbol("XSP");
+        contract.secType("STK");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        contract.primaryExch("ISLAND");
+        return contract;
+    }
+
+    public static Contract IWM() {
+        Contract contract = new Contract();
+        contract.symbol("IWM");
+        contract.secType("STK");
+        contract.currency("USD");
+        contract.exchange("SMART");
+        contract.primaryExch("ISLAND");
         return contract;
     }
 

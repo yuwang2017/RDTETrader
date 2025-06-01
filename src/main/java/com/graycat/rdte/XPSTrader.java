@@ -1,6 +1,7 @@
 package com.graycat.rdte;
 
-import com.graycat.rdte.contracts.ContractSamples;
+import com.graycat.rdte.contracts.MyContracts;
+import com.graycat.rdte.ewwrapper.XPSWrapperImpl;
 import com.ib.client.EClientSocket;
 import com.ib.client.EReader;
 import com.ib.client.EReaderSignal;
@@ -9,7 +10,7 @@ public class XPSTrader {
     public static boolean chainRetreived = false;
 
     public static void main(String[] args) throws InterruptedException {
-        XPSTraderWrapper wrapper = new XPSTraderWrapper();
+        XPSWrapperImpl wrapper = new XPSWrapperImpl();
 
         final EClientSocket m_client = wrapper.getClient();
         final EReaderSignal m_signal = wrapper.getSignal();
@@ -36,7 +37,7 @@ public class XPSTrader {
         // A pause to give the application time to establish the connection
         // In a production application, it would be best to wait for callbacks to confirm the connection is complete
         Thread.sleep(1000);
-        wrapper.getClient().reqContractDetails(1001, ContractSamples.Rut());
+        wrapper.getClient().reqContractDetails(1001, MyContracts.XSP());
         Thread.sleep(100000);
         m_client.eDisconnect();
     }

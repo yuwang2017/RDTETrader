@@ -1,6 +1,7 @@
-package com.graycat.rdte;
+package com.graycat.rdte.ewwrapper;
 
-import com.graycat.rdte.contracts.ContractSamples;
+import com.graycat.rdte.RDTETrader;
+import com.graycat.rdte.contracts.MyContracts;
 import com.graycat.rdte.orders.OrderSamples;
 import com.graycat.rdte.trader.OptionChain;
 import com.graycat.rdte.trader.OptionEntry;
@@ -10,7 +11,7 @@ import com.ib.client.*;
 
 import java.util.*;
 
-public class XPSTraderWrapper implements EWrapper {
+public class XPSWrapperImpl implements EWrapper {
 
     private EReaderSignal readerSignal;
     private EClientSocket clientSocket;
@@ -32,7 +33,7 @@ public class XPSTraderWrapper implements EWrapper {
     HashMap<Integer, OptionEntry> optionHolder = new HashMap<>();
 
     //! [socket_init]
-    public XPSTraderWrapper() {
+    public XPSWrapperImpl() {
         readerSignal = new EJavaSignal();
         clientSocket = new EClientSocket(this, readerSignal);
     }
@@ -59,7 +60,7 @@ public class XPSTraderWrapper implements EWrapper {
     private synchronized void checkForTrade(int tickerId, OptionEntry option) {
         //System.out.println(" ********* Check Deal : " + option.getStrike() + ", reqId = " + tickerId);
         LogManager logManager = LogManager.getManager();
-        if (!logManager.isOrderSubmitted(ContractSamples.getToday())) {
+        if (!logManager.isOrderSubmitted(MyContracts.getToday())) {
             //return;
         }
         //Only 1 order per day
@@ -106,7 +107,7 @@ public class XPSTraderWrapper implements EWrapper {
             //  orderSubmitted = true;
             submittedRequestId = tickerId;
             // getClient().placeOrder(cid, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.MarketOrder("SELL", Decimal.parse("1")));
-            getClient().placeOrder(cid, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.LimitOrder("SELL", Decimal.parse("1"), orderPrice));
+            getClient().placeOrder(cid, MyContracts.XSP0DTEContract(option.getStrike(), OptionEntry.CALL), OrderSamples.LimitOrder("SELL", Decimal.parse("1"), orderPrice));
             //getClient().reqGlobalCancel();
         }
     }
@@ -142,7 +143,7 @@ public class XPSTraderWrapper implements EWrapper {
                     }
                     //This is the process to set the option expiration date and strike price
                     optionChain.setSymbol("XSP");
-                    optionChain.setExpire(ContractSamples.getToday());
+                    optionChain.setExpire(MyContracts.getToday());
                     for (Double strike : strikes) {
                         OptionEntry option = new OptionEntry();
                         option.setStrike(strike);
@@ -150,11 +151,10 @@ public class XPSTraderWrapper implements EWrapper {
                     }
 
                     //After setup the option chain, get the current RUT Price
-                    getClient().reqMktData(1003, ContractSamples.RUSSEL2000(), "221", false, false, null);
+                    getClient().reqMktData(1003, MyContracts.XSP(), "221", false, false, null);
                 }
             }
         }
-        //System.out.println("Security Definition Optional Parameter: " + EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class XPSTraderWrapper implements EWrapper {
                     if ((option.getStrike() > currentPrice) && (option.getStrike() < currentPrice * 1.02)) {
                         optionHolder.put(requestId, option);
                         //getClient().reqMktData(requestId, ContractSamples.RUT0DTEContract(option.getStrike(), OptionEntry.CALL), "100,106,221,220,233,236", false, false, null);
-                        getClient().reqMktData(requestId, ContractSamples.XSP0DTEContract(option.getStrike(), OptionEntry.CALL), "101", false, false, null);
+                        getClient().reqMktData(requestId, MyContracts.XSP0DTEContract(option.getStrike(), OptionEntry.CALL), "101", false, false, null);
                         requestId = requestId + 1;
                     }
                 }
@@ -260,7 +260,7 @@ public class XPSTraderWrapper implements EWrapper {
                 LogManager logManager = LogManager.getManager();
                 OptionEntry option = optionHolder.get(submittedRequestId);
                 TradingLogEntry logEntry = new TradingLogEntry();
-                logEntry.setExpire(ContractSamples.getToday());
+                logEntry.setExpire(MyContracts.getToday());
                 logEntry.setStrategy(OptionEntry.CALL);
                 logEntry.setTicker("XSP");
                 logEntry.setTradingDate(new Date());

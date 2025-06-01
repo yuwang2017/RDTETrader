@@ -1,5 +1,6 @@
-package com.graycat.rdte;
+package com.graycat.rdte.ewwrapper;
 
+import com.graycat.rdte.RDTETrader;
 import com.graycat.rdte.contracts.ContractSamples;
 import com.graycat.rdte.orders.OrderSamples;
 import com.graycat.rdte.trader.OptionChain;
@@ -18,7 +19,7 @@ import java.util.Date;
  * This class implements RDTE strategy by monitoring the volume change
  * of RUT 0DTE call volume.
  */
-public class EWrapperImpl implements EWrapper {
+public class RDTEWrapperImpl implements EWrapper {
 
     private EReaderSignal readerSignal;
     private EClientSocket clientSocket;
@@ -40,7 +41,7 @@ public class EWrapperImpl implements EWrapper {
     HashMap<Integer, OptionEntry> optionHolder = new HashMap<>();
 
     //! [socket_init]
-    public EWrapperImpl() {
+    public RDTEWrapperImpl() {
         readerSignal = new EJavaSignal();
         clientSocket = new EClientSocket(this, readerSignal);
     }

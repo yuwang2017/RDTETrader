@@ -1,6 +1,8 @@
 package com.graycat.rdte;
 
 import com.graycat.rdte.contracts.ContractSamples;
+import com.graycat.rdte.contracts.MyContracts;
+import com.graycat.rdte.ewwrapper.RDTEWrapperImpl;
 import com.graycat.rdte.orders.OrderSamples;
 import com.graycat.rdte.trader.OptionEntry;
 import com.ib.client.Decimal;
@@ -10,7 +12,7 @@ import com.ib.client.EReaderSignal;
 
 public class TestBed {
     public static void main(String[] args) throws InterruptedException {
-        EWrapperImpl wrapper = new EWrapperImpl();
+        RDTEWrapperImpl wrapper = new RDTEWrapperImpl();
 
         final EClientSocket m_client = wrapper.getClient();
         final EReaderSignal m_signal = wrapper.getSignal();
@@ -53,7 +55,9 @@ public class TestBed {
         //client.reqTickByTickData(1003, ContractSamples.RUSSEL2000(), "Last", 0, false);
         //client.reqMktData(1003, ContractSamples.RUT0DTEContract(2090, OptionEntry.CALL), "100,220,221,233,236", false, false, null);
         //client.reqMktData(1003, ContractSamples.RUT0DTEContract(2060, OptionEntry.CALL), "220,221", false, false, null);
-        client.reqMktData(1003, ContractSamples.XSP0DTEContract(585, OptionEntry.CALL), "101", false, false, null);
+        //client.reqMktData(1003, ContractSamples.XSP0DTEContract(585, OptionEntry.CALL), "101", false, false, null);
+        //client.reqMktData(1003, MyContracts.XSP0DTEContract(600, OptionEntry.CALL), "", false, false, null);
+        client.reqMktData(1003, MyContracts.XSP(), "", false, false, null);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

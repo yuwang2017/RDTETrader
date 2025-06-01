@@ -1,5 +1,6 @@
 package com.graycat.rdte;
 import com.graycat.rdte.contracts.ContractSamples;
+import com.graycat.rdte.ewwrapper.RDTEWrapperImpl;
 import com.ib.client.*;
 
 public class RDTETrader {
@@ -7,7 +8,7 @@ public class RDTETrader {
     public static boolean chainRetreived = false;
 
     public static void main(String[] args) throws InterruptedException {
-        EWrapperImpl wrapper = new EWrapperImpl();
+        RDTEWrapperImpl wrapper = new RDTEWrapperImpl();
 
         final EClientSocket m_client = wrapper.getClient();
         final EReaderSignal m_signal = wrapper.getSignal();
