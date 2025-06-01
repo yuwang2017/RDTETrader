@@ -1,5 +1,5 @@
 package com.graycat.rdte;
-import com.graycat.rdte.contracts.ContractSamples;
+import com.graycat.rdte.contracts.MyContracts;
 import com.graycat.rdte.ewwrapper.RDTEWrapperImpl;
 import com.ib.client.*;
 
@@ -35,7 +35,7 @@ public class RDTETrader {
         // A pause to give the application time to establish the connection
         // In a production application, it would be best to wait for callbacks to confirm the connection is complete
         Thread.sleep(1000);
-        wrapper.getClient().reqContractDetails(1001, ContractSamples.Rut());
+        wrapper.getClient().reqContractDetails(1001, MyContracts.RUT());
         Thread.sleep(100000);
         m_client.eDisconnect();
     }

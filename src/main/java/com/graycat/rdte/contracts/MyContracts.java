@@ -19,14 +19,6 @@ public class MyContracts {
         contract.exchange("RUSSELL");
         return contract;
     }
-    public static Contract RUSSEL2000() {
-        Contract contract = new Contract();
-        contract.symbol("RUT");
-        contract.secType("IND");
-        contract.currency("USD");
-        contract.exchange("RUSSELL");
-        return contract;
-    }
 
     public static Contract RUT0DTEContract(double strike, String strategy) {
         Contract contract = new Contract();
